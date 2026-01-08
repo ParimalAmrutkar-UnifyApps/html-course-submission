@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form with Validation</title>
+</head>
+<body>
+    <h1>User Registration Form</h1>
+    
+    <div id="form-container">
+        <label>Name:</label><br>
+        <input type="text" id="name" required><br><br>
+        
+        <label>Age:</label><br>
+        <input type="number" id="age" min="1" required><br><br>
+        
+        <label>Gender:</label><br>
+        <input type="radio" id="male" name="gender" value="Male">
+        <label for="male">Male</label><br>
+        <input type="radio" id="female" name="gender" value="Female">
+        <label for="female">Female</label><br>
+        <input type="radio" id="other" name="gender" value="Other">
+        <label for="other">Other</label><br><br>
+        
+        <label>Country:</label><br>
+        <select id="country" required>
+            <option value="">Select Country</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="Japan">Japan</option>
+            <option value="China">China</option>
+        </select><br><br>
+        
+        <label>Technological Stack:</label><br>
+        <input type="checkbox" id="html" name="tech" value="HTML">
+        <label for="html">HTML</label><br>
+        <input type="checkbox" id="css" name="tech" value="CSS">
+        <label for="css">CSS</label><br>
+        <input type="checkbox" id="js" name="tech" value="JS">
+        <label for="js">JS</label><br>
+        <input type="checkbox" id="react" name="tech" value="React">
+        <label for="react">React</label><br>
+        <input type="checkbox" id="reactnative" name="tech" value="React Native">
+        <label for="reactnative">React Native</label><br><br>
+        
+        <label>Address:</label><br>
+        <textarea id="address" rows="4" cols="50" required></textarea><br><br>
+        
+        <label>Telephone:</label><br>
+        <input type="tel" id="telephone" required><br><br>
+        
+        <label>Email:</label><br>
+        <input type="email" id="email" required><br><br>
+        
+        <button onclick="resetForm()">Reset</button>
+        <button onclick="submitForm()">Submit</button>
+    </div>
+    
+    <div id="error-message"></div>
+    
+    <div id="result"></div>
+
+    <script>
+        function resetForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('age').value = '';
+            
+            var genderRadios = document.getElementsByName('gender');
+            for (var i = 0; i < genderRadios.length; i++) {
+                genderRadios[i].checked = false;
+            }
+            
+            document.getElementById('country').value = '';
+            
+            var techCheckboxes = document.getElementsByName('tech');
+            for (var i = 0; i < techCheckboxes.length; i++) {
+                techCheckboxes[i].checked = false;
+            }
+            
+            document.getElementById('address').value = '';
+            document.getElementById('telephone').value = '';
+            document.getElementById('email').value = '';
+            
+            document.getElementById('error-message').innerHTML = '';
+            document.getElementById('result').innerHTML = '';
+        }
+        
+        function submitForm() {
+            document.getElementById('error-message').innerHTML = '';
+            
+            var name = document.getElementById('name').value.trim();
+            var age = document.getElementById('age').value.trim();
+            var country = document.getElementById('country').value;
+            var address = document.getElementById('address').value.trim();
+            var telephone = document.getElementById('telephone').value.trim();
+            var email = document.getElementById('email').value.trim();
+            
+            var genderRadios = document.getElementsByName('gender');
+            var gender = '';
+            for (var i = 0; i < genderRadios.length; i++) {
+                if (genderRadios[i].checked) {
+                    gender = genderRadios[i].value;
+                    break;
+                }
+            }
+            
+            var techCheckboxes = document.getElementsByName('tech');
+            var techStack = [];
+            for (var i = 0; i < techCheckboxes.length; i++) {
+                if (techCheckboxes[i].checked) {
+                    techStack.push(techCheckboxes[i].value);
+                }
+            }
+            
+            if (name === '') {
+                document.getElementById('error-message').innerHTML = '<p>Error: Name is required</p>';
+                return;
+            }
+            
+            if (age === '') {
+                document.getElementById('error-message').innerHTML = '<p>Error: Age is required</p>';
+                return;
+            }
+            
+            if (isNaN(age) || age <= 0) {
+                document.getElementById('error-message').innerHTML = '<p>Error: Age must be a valid positive number</p>';
+                return;
+            }
+            
+            if (gender === '') {
+                document.getElementById('error-message').innerHTML = '<p>Error: Gender is required</p>';
+                return;
+            }
+            
+            if (country === '') {
+                document.getElementById('error-message').innerHTML = '<p>Error: Country is required</p>';
+                return;
+            }
+            
+            if (techStack.length === 0) {
+                document.getElementById('error-message').innerHTML = '<p>Error: At least one technology must be selected</p>';
+                return;
+            }
+            
+            if (address === '') {
+                document.getElementById('error-message').innerHTML = '<p>Error: Address is required</p>';
+                return;
+            }
+            
+            if (telephone === '') {
+                document.getElementById('error-message').innerHTML = '<p>Error: Telephone is required</p>';
+                return;
+            }
+            
+            var phonePattern = /^[0-9+\-() ]+$/;
+            if (!phonePattern.test(telephone)) {
+                document.getElementById('error-message').innerHTML = '<p>Error: Telephone must contain only valid phone number characters</p>';
+                return;
+            }
+            
+            if (email === '') {
+                document.getElementById('error-message').innerHTML = '<p>Error: Email is required</p>';
+                return;
+            }
+            
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                document.getElementById('error-message').innerHTML = '<p>Error: Email must be a valid email address</p>';
+                return;
+            }
+            
+            var techStackString = techStack.join(', ');
+            
+            var tableHTML = '<h2>Form Data</h2>';
+            tableHTML += '<table border="1" cellpadding="10">';
+            tableHTML += '<tr><th>Field</th><th>Value</th></tr>';
+            tableHTML += '<tr><td>Name</td><td>' + name + '</td></tr>';
+            tableHTML += '<tr><td>Age</td><td>' + age + '</td></tr>';
+            tableHTML += '<tr><td>Gender</td><td>' + gender + '</td></tr>';
+            tableHTML += '<tr><td>Country</td><td>' + country + '</td></tr>';
+            tableHTML += '<tr><td>Technological Stack</td><td>' + techStackString + '</td></tr>';
+            tableHTML += '<tr><td>Address</td><td>' + address.replace(/\n/g, '<br>') + '</td></tr>';
+            tableHTML += '<tr><td>Telephone</td><td>' + telephone + '</td></tr>';
+            tableHTML += '<tr><td>Email</td><td>' + email + '</td></tr>';
+            tableHTML += '</table>';
+            
+            document.getElementById('result').innerHTML = tableHTML;
+        }
+    </script>
+</body>
+</html>
